@@ -1,0 +1,63 @@
+---
+title: "R assignment"
+output: word_document
+date: "2023-02-22"
+---
+```{r}
+library(dplyr)
+library(lattice)
+library(ggplot2)
+library(readxl)
+df <- read_excel("sales_data_sample1.xlsx")
+
+
+df
+df$PRODUCTLINE<-as.factor(df$PRODUCTLINE)
+df$CITY<-as.factor(df$CITY)
+df$COUNTRY<-as.factor(df$COUNTRY)
+df$DEALSIZE<-as.factor(df$DEALSIZE)
+df$STATUS<-as.factor(df$STATUS)
+df$MONTH_ID=as.factor(df$MONTH_ID)
+summary(df)
+colSums(is.na(df))
+
+
+histogram(~SALES,data = df)
+histogram(~SALES|df$YEAR_ID,data=df)
+histogram(~SALES|COUNTRY,data = df)
+histogram(~SALES|PRODUCTLINE,data = df)
+histogram(~SALES|COUNTRY,data = df)
+histogram(~df$YEAR_ID,data = df)
+histogram(~QUANTITYORDERED,data = df)
+
+dfc=subset(df,COUNTRY=="USA")
+summary(dfc)
+
+df %>% ggplot(aes(SALES))+geom_bar(stat = "count")
+summary(df$SALES)
+df %>% ggplot(aes(STATUS))+geom_bar(stat = "count")
+dfst=subset(df,STATUS=="Shipped")
+dfst %>% ggplot(aes(MONTH_ID))+geom_bar(stat = "count")
+dfm=subset(dfst,MONTH_ID==10|dfst$MONTH_ID==11)
+summary(dfm)
+histogram(~QUANTITYORDERED,data=dfm)
+histogram(dfm$PRICEEACH)
+
+plot(x=dfm$QUANTITYORDERED,y=dfm$SALES)
+
+
+df %>% ggplot(aes(PRODUCTLINE))+geom_bar(stat = "count")
+dfm%>% ggplot(aes(PRODUCTLINE))+geom_bar(stat = "count")
+
+dfsi=subset(dfm,DEALSIZE=="Medium")
+
+dfst1=subset(df,STATUS !="Shipped")
+summary(dfst1)
+dfm1=subset(dfst1,MONTH_ID==5|dfst1$MONTH_ID==6)
+summary(dfm1)
+
+boxplot(SALES~PRODUCTLINE,data = dfst1)
+boxplot(SALES~PRODUCTLINE,data = dfm1)
+  
+```
+
